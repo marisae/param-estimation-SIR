@@ -1,59 +1,43 @@
 % Profile Likelihood Generator
 % Marisa Eisenberg (marisae@umich.edu) - 7/31/16 - updated 6-22-17
 
-function profile = ProfLike(params,profparam,fitter,factor)
+function profile = ProfLike(params,profindex,costfun,factor)
 % Definitions
 %   params = point in parameter space from which to profile (the parameter estimates)
 %   profparam = index of the parameter to be profiled
 %   factor = the fractional/percent range to profile the parameter over
-%   fitter = this is a customized fminsearch that takes two arguments:
-%     params and paramsfixedfcn, which tell it the starting parameters and
-%     fixes the profiled parameter. Everythng else (data, ICs, likelihood
-%     function, etc.) is fixed for the entire profile so is set outside when 
-%     the fitter is defined.
-%     e.g. fitter = @(params,paramfixedfcn) fminsearch(@(p) siwrML(times,p,paramfixedfcn,data,x0fcn,yfcn),params,optimset('MaxFunEvals',5000,'MaxIter',5000))
-
+%   costfun = this is a cost function of only the parameters (the full vector of them)
+%     Everythng else (data, ICs, etc.) is fixed for the entire profile so is set outside when 
+%     costfun is defined. In ProfLike, we'll put a wrapper on costfun that
+%     will fix the profiled parameter.
 
 % Setup
 % factor = 0.5;
 numpoints = 10;
 
+% Costfun wrapper
+fixcostfun = @(shortparams,profparamval)...
+    costfun([shortparams(1:profindex-1),profparamval,shortparams(profindex:end)]);
+
 % Profile
-profrangeDown = linspace(params(profparam), params(profparam)*(1-factor),numpoints)'; 
-profrangeUp = linspace(params(profparam), params(profparam)*(1+factor),numpoints)';
+profrangeDown = linspace(params(profindex), params(profindex)*(1-factor),numpoints)'; 
+profrangeUp = linspace(params(profindex), params(profindex)*(1+factor),numpoints)';
 % split into up and down so we can use last fitted value as starting value for next run
 profrange = [profrangeDown profrangeUp];
 currfvals = [];
 currparams = [];
 currflags = [];
 for i=1:2
-    paramstemp = params;
+    paramstemp = [params(1:profindex-1), params(profindex+1:end)];
     for j = 1:numpoints
         [i j] %track progress
-        if profparam==length(params) % got to be a nicer way to do this without an if statement, but think of it later
-            paramfixedfcn = @(p) [p(1:profparam-1); profrange(j,i)];
-        else
-            paramfixedfcn = @(p) [p(1:profparam-1); profrange(j,i); p(profparam+1:end)];
-        end
-        
-        %Quick note about how I'm doing the paramfixedfcn---it's not really
-        %good practice to pass the optimizer a parameter that won't be
-        %changing (the fixed parameter), since that direction in parameter
-        %space will then have a completely flat likelhood. It's okay in
-        %this case---the optimizer still runs fine for the other parameters
-        %and it still converges, but be careful because some optimizers will not
-        %work well with this! You could (probably should...) instead pass the profiled parameter
-        %separately to the ProfLike function and then combine the profiled 
-        %parameter with the other parameters in the cost function before 
-        %you run the ODE.
-        
-        [paramstemp, fvaltemp, flagtemp] = fitter(paramstemp,paramfixedfcn);
-        paramstemp = paramfixedfcn(abs(paramstemp));
+        [paramstemp, fvaltemp, flagtemp] = fminsearch(@(p) fixcostfun(p,profrange(j,i)),paramstemp,optimset('MaxFunEvals',5000,'MaxIter',5000));
         currfvals = [currfvals; fvaltemp];
         currflags = [currflags; flagtemp];
-        currparams = [currparams; paramstemp'];
+        currparams = [currparams; [paramstemp(1:profindex-1),profrange(j,i),paramstemp(profindex:end)]]; %storing the profiled value too, so the output parameter values are easy to run the model with
     end
 end
 
 profile = [flipud([profrangeDown currfvals(1:numpoints) currflags(1:numpoints) currparams(1:numpoints,:)]);...
     [profrangeUp currfvals(numpoints+1:end) currflags(numpoints+1:end) currparams(numpoints+1:end,:)]];
+end
