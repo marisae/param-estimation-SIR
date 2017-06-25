@@ -5,3 +5,4 @@ Some quick example code for parameter estimation with an SIR model, as well as f
 - Calculate a simplified form of the Fisher information matrix (FIM) and test its rank to evaluate the number of identifiable parameters/combinations
 - Generate profile likelihoods for each parameter and determine 95% confidence intervals
 
+(Questions? Contact Marisa Eisenberg (marisae@umich.edu).)
