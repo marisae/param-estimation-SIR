@@ -42,7 +42,7 @@ yfcn = @(x,params) x(:,2)*params(3);
 
 
 % Starting parameter values:
-params = [0.4; 0.25; 80000]; %beta, gamma, k
+params = [0.4, 0.25, 80000]; %beta, gamma, k
 
 
 %% Simulate and Plot the Model
