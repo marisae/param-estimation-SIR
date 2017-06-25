@@ -33,14 +33,3 @@ source('ProfLike.R')
 #### Load Data ####
 times = c(0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98)
 data = c(97, 271, 860, 1995, 4419, 6549, 6321, 4763, 2571, 1385, 615, 302, 159, 72, 34)
-
-#### Load all the things ####
-library(deSolve)
-# library('Bhat')
-library(Matrix)
-source('MiniFisher.R')
-source('ProfLike.R')
-  
-#### Load Data ####
-times = c(0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98)
-data = c(97, 271, 860, 1995, 4419, 6549, 6321, 4763, 2571, 1385, 615, 302, 159, 72, 34)
