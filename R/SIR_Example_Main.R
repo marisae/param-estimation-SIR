@@ -65,7 +65,7 @@ SIRML=function(params,times,data){
   # NLL = sum((y - data)^2)  # sum of squares
   NLL =  sum(y) - sum(data*log(y)) # Poisson ML
   
-  return(NLL)
+  #return(NLL)
 }
   
 #### Estimate parameters & plot ####
