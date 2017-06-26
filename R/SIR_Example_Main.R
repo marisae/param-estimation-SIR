@@ -79,7 +79,7 @@ points(times, data)
 #### Calculate the simplified Fisher Information Matrix (FIM) ####
 FIM = MiniFisher(times,paramests,x0fun,SIRode,yfun)
 rankMatrix(FIM)[1]
-# qr(FIM)$rank # interestingly this gives a different answer (presumably different default tolerance)
+# qr(FIM)$rank
   
 #### Generate profile likelihoods and confidence bounds ####
 profiles = list()
