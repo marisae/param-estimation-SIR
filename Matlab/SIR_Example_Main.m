@@ -123,7 +123,7 @@ for i=1:length(paramests)
         % then columns for each of the other parameter estimates.
     
     %plot profile
-    figure(i)
+    figure(10+i)
     set(gca,'LineWidth',1,'FontSize',16,'FontName','Arial')
     hold on
     plot(profiles(:,1,i),profiles(:,2,i),'k','LineWidth',2)
@@ -133,7 +133,7 @@ for i=1:length(paramests)
     ylabel('Cost Function Value')
     
     %plot parameter relationships
-%     figure(10+i)
+%     figure(20+i)
 %     set(gca,'LineWidth',1,'FontSize',16,'FontName','Arial')
 %     hold on
 %     plot(profiles(:,1,i),profiles(:,4:end,i),'LineWidth',2)
