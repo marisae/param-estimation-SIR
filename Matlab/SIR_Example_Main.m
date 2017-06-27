@@ -138,9 +138,9 @@ for i=1:length(paramests)
 %     hold on
 %     plot(profiles(:,1,i),profiles(:,4:end,i),'LineWidth',2)
 %     plot(paramests(i),paramests,'r*')
-%     xlabel(paramlist{i})
+%     xlabel(paramnames{i})
 %     ylabel('Estimated Parameter Value')
-%     legend(paramlist)
+%     legend(paramnames)
 end
 
 
