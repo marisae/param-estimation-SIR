@@ -61,11 +61,20 @@ SIRML=function(params,times,data){
   # Measurement equation
   y = yfun(xcurr,params)
   
-  #Least squares
-  # NLL = sum((y - data)^2)  # sum of squares
+  # Negative Log Likelihood (NLL)
   NLL =  sum(y) - sum(data*log(y)) # Poisson ML
+    # note this is a slightly shortened version--there's an additive constant term missing but it 
+    # makes calculation faster and won't alter the threshold. Alternatively, can do:
+  # NLL = -sum(log(dpois(round(data),round(y)))) # the round is b/c Poisson is for (integer) count data
+    # this can also barf if data and y are too far apart because the dpois will be ~0, which makes the log angry
   
-  #return(NLL)
+  # ML using normally distributed measurement error (least squares)
+  # NLL = -sum(log(dnorm(data,y,0.1*mean(data)))) # example WLS assuming sigma = 0.1*mean(data)
+  # NLL = sum((y - data)^2)  # alternatively can do OLS but note this will mess with the thresholds 
+  #                             for the profile! This version of OLS is off by a scaling factor from
+  #                             actual LL units.
+  
+  # return(NLL) 
 }
   
 #### Estimate parameters & plot ####
